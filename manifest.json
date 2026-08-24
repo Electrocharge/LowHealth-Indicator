@@ -1,0 +1,6 @@
+{
+  "name": "Low Health Overlay",
+  "version": "0.1.0",
+  "description": "Displays a red screen overlay when local player health falls below a configurable threshold.",
+  "entry": "libLowHealthOverlay.so"
+}
