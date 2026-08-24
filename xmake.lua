@@ -1,13 +1,51 @@
-set_project("LowHealthOverlay")
-set_version("0.1.0")
+add_rules("mode.debug", "mode.release")
 
-add_rules("mode.release", "mode.debug")
+package("preloader")
+    set_homepage(
+        "https://github.com/LiteLDev/preloader-android"
+    )
+
+    set_description("Preloader Android")
+
+    add_urls(
+        "https://github.com/LiteLDev/preloader-android.git"
+    )
+
+    add_versions("main", "main")
+
+    add_deps("cmake")
+
+    on_install("android", function (package)
+        import("package.tools.cmake")
+            .install(package)
+    end)
+package_end()
+
+add_requires("preloader")
+add_requires("nlohmann_json v3.11.3")
 
 target("LowHealthOverlay")
     set_kind("shared")
-    add_files("src/*.cpp")
-    add_includedirs("include")
-    set_targetdir("build/$(plat)/$(arch)/$(mode)")
+    set_languages("c++20")
+    set_strip("all")
 
-    -- Android/arm64-v8a toolchain configuration is supplied by the build environment.
-    -- Add confirmed LeviLauncher/Preloader SDK include paths and libraries here.
+    add_files(
+        "src/main.cpp",
+        "src/core/*.cpp",
+        "src/launcher/*.cpp",
+        "src/modules/*.cpp"
+    )
+
+    add_includedirs(
+        "src"
+    )
+
+    add_packages(
+        "preloader",
+        "nlohmann_json"
+    )
+
+    if is_plat("android") then
+        add_cxflags("-fPIC")
+        add_links("android", "log")
+end
