@@ -1,21 +1,31 @@
-#include "LowHealthOverlay.hpp"
+#include "core/Runtime.hpp"
+#include <pl/Mod.hpp>
 
-static LowHealthOverlay g_lowHealthOverlay;
+class LowHealthOverlayMod {
+public:
+    static LowHealthOverlayMod& instance() {
+        static LowHealthOverlayMod mod;
+        return mod;
+    }
 
-// LEVILAUNCHER NATIVE ENTRY INTEGRATION POINT
-//
-// Connect this file to the exact native-mod registration/initialization API
-// confirmed from the LeviLauncher SDK/source for your version.
-//
-// Conceptual lifecycle:
-//
-// LeviLauncher loads this .so
-//     -> register Low Health Overlay module
-//     -> expose enabled + health threshold settings
-//     -> wait for Minecraft/local player
-//     -> on each confirmed HUD/render callback:
-//            health = read local player health
-//            g_lowHealthOverlay.onFrame(health)
-//
-// The concrete entry symbol and callback registration are deliberately not
-// guessed here because a wrong native ABI/API can crash the game.
+    bool load(pl::mod::ModContext& context) {
+        return lowhealth::Runtime::get().load(context);
+    }
+
+    bool enable(pl::mod::ModContext& context) {
+        return lowhealth::Runtime::get().enable(context);
+    }
+
+    bool disable(pl::mod::ModContext& context) {
+        return lowhealth::Runtime::get().disable(context);
+    }
+
+    bool unload(pl::mod::ModContext& context) {
+        return lowhealth::Runtime::get().unload(context);
+    }
+};
+
+PL_REGISTER_MOD(
+    LowHealthOverlayMod,
+    LowHealthOverlayMod::instance()
+)
