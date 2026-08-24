@@ -28,11 +28,11 @@ jobs:
 
       - name: Configure
         run: |
-          xmake f -p android -a arm64-v8a -m release --ndk="$ANDROID_NDK_ROOT"
+          xmake f -y -p android -a arm64-v8a -m release --ndk="$ANDROID_NDK_ROOT"
 
       - name: Build
         run: |
-          xmake -v
+          xmake -y -v
 
       - name: Package
         run: |
